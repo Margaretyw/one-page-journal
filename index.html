@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f3edf1" />
+    <meta
+      name="description"
+      content="一页手账：记录每天的三餐、花费、收获、灵感与喜欢的内容。"
+    />
+    <title>一页手账 · 把日子写下来</title>
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="paper-texture" aria-hidden="true"></div>
+
+    <div class="app-shell">
+      <aside class="sidebar">
+        <a class="brand" href="#" id="brandHome" aria-label="回到今天">
+          <span class="brand-seal" aria-hidden="true">页</span>
+          <span class="brand-copy">
+            <strong>一页手账</strong>
+            <small>ONE PAGE, EVERY DAY</small>
+          </span>
+        </a>
+
+        <section class="calendar-panel" aria-labelledby="calendarTitle">
+          <div class="calendar-toolbar">
+            <button class="icon-button" id="prevMonth" type="button" aria-label="上个月">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m15 18-6-6 6-6" />
+              </svg>
+            </button>
+            <h2 id="calendarTitle">本月</h2>
+            <button class="icon-button" id="nextMonth" type="button" aria-label="下个月">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m9 18 6-6-6-6" />
+              </svg>
+            </button>
+          </div>
+          <div class="calendar-weekdays" aria-hidden="true">
+            <span>一</span><span>二</span><span>三</span><span>四</span>
+            <span>五</span><span>六</span><span>日</span>
+          </div>
+          <div class="calendar-grid" id="calendarGrid"></div>
+          <div class="calendar-footer">
+            <button class="text-button" id="goToday" type="button">回到今天</button>
+            <span class="legend"><i></i>有记录 / 已打卡</span>
+          </div>
+        </section>
+
+        <section class="sidebar-stats" aria-label="手账统计">
+          <div>
+            <span id="streakCount">0</span>
+            <small>连续打卡</small>
+          </div>
+          <div>
+            <span id="recordCount">0</span>
+            <small>本月记录</small>
+          </div>
+          <div>
+            <span id="monthSpend">¥0</span>
+            <small>本月花费</small>
+          </div>
+        </section>
+
+        <section class="sidebar-note">
+          <p>“把日子写下来，它就有了形状。”</p>
+          <span id="yearProgress">今年已走过 0%</span>
+        </section>
+
+        <div class="backup-actions">
+          <button class="quiet-button" id="exportButton" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 3v12m0 0 4-4m-4 4-4-4M5 17v3h14v-3" />
+            </svg>
+            导出备份
+          </button>
+          <button class="quiet-button" id="importButton" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 15V3m0 0L8 7m4-4 4 4M5 17v3h14v-3" />
+            </svg>
+            导入
+          </button>
+          <input id="importFile" type="file" accept="application/json,.json" hidden />
+        </div>
+        <p class="storage-note">只保存在当前浏览器 · 记得定期备份</p>
+      </aside>
+
+      <main class="journal">
+        <header class="topbar">
+          <div class="topbar-quote">
+            <span class="eyebrow">DAILY NOTES</span>
+            <p id="dailyQuote">认真生活，也认真收藏生活。</p>
+          </div>
+          <div class="topbar-actions">
+            <span class="save-status" id="saveStatus" aria-live="polite">所有更改已保存</span>
+            <button class="pill-button" id="openArchive" type="button">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 5h16v4H4zM6 9v10h12V9M9 13h6" />
+              </svg>
+              翻阅收藏
+            </button>
+            <button class="icon-button bordered" id="printButton" type="button" aria-label="打印当天手账">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M7 8V3h10v5M7 17H5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2M7 14h10v7H7z" />
+              </svg>
+            </button>
+          </div>
+        </header>
+
+        <section class="date-hero" aria-labelledby="dateTitle">
+          <div class="date-navigation">
+            <button class="icon-button" id="prevDay" type="button" aria-label="前一天">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m15 18-6-6 6-6" />
+              </svg>
+            </button>
+            <span class="date-relation" id="dateRelation">今天</span>
+            <button class="icon-button" id="nextDay" type="button" aria-label="后一天">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m9 18 6-6-6-6" />
+              </svg>
+            </button>
+          </div>
+          <div class="date-main">
+            <div class="date-number" id="dayNumber">11</div>
+            <div class="date-copy">
+              <p id="monthYear">2026年 11月</p>
+              <h1 id="dateTitle">11月11日，星期三</h1>
+              <span id="dayOrdinal">今年的第 315 天</span>
+            </div>
+          </div>
+          <button class="checkin-button" id="checkinButton" type="button" aria-pressed="false">
+            <span class="checkin-ring">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m6 12 4 4 8-9" />
+              </svg>
+            </span>
+            <span>
+              <strong>今天，打个卡</strong>
+              <small>留下这一天的痕迹</small>
+            </span>
+          </button>
+        </section>
+
+        <section class="checkin-strip" aria-labelledby="moodTitle">
+          <div class="strip-label">
+            <span class="section-index">01</span>
+            <div>
+              <h2 id="moodTitle">今天感觉如何？</h2>
+              <p>不必准确，选一个最接近的就好。</p>
+            </div>
+          </div>
+          <div class="mood-options" id="moodOptions" role="group" aria-label="今日心情">
+            <button type="button" data-mood="明亮"><i class="mood-sun"></i>明亮</button>
+            <button type="button" data-mood="平静"><i class="mood-calm"></i>平静</button>
+            <button type="button" data-mood="忙碌"><i class="mood-busy"></i>忙碌</button>
+            <button type="button" data-mood="疲惫"><i class="mood-tired"></i>疲惫</button>
+          </div>
+        </section>
+
+        <div class="journal-grid">
+          <section class="paper-card meal-card">
+            <div class="card-heading">
+              <div>
+                <span class="section-index">02</span>
+                <h2>今天的餐桌</h2>
+              </div>
+              <span class="card-note">好好吃饭，也是认真生活</span>
+            </div>
+            <div class="meal-list">
+              <label class="meal-row">
+                <span class="meal-time">早</span>
+                <input
+                  type="text"
+                  data-day-field="meals.breakfast"
+                  placeholder="今天早餐吃了什么？"
+                  maxlength="180"
+                />
+              </label>
+              <label class="meal-row">
+                <span class="meal-time">午</span>
+                <input
+                  type="text"
+                  data-day-field="meals.lunch"
+                  placeholder="午餐 / 今天的主食..."
+                  maxlength="180"
+                />
+              </label>
+              <label class="meal-row">
+                <span class="meal-time">晚</span>
+                <input
+                  type="text"
+                  data-day-field="meals.dinner"
+                  placeholder="晚餐 / 一点好吃的..."
+                  maxlength="180"
+                />
+              </label>
+              <label class="meal-row snack">
+                <span class="meal-time">加</span>
+                <input
+                  type="text"
+                  data-day-field="meals.snack"
+                  placeholder="零食、饮料或想记下的味道"
+                  maxlength="180"
+                />
+              </label>
+            </div>
+            <p class="marginal-quote">一餐一饭，都是今天的一部分。</p>
+          </section>
+
+          <section class="paper-card expense-card">
+            <div class="card-heading">
+              <div>
+                <span class="section-index">03</span>
+                <h2>今日花费</h2>
+              </div>
+              <div class="expense-total">
+                <small>合计</small>
+                <strong id="expenseTotal">¥0</strong>
+              </div>
+            </div>
+            <div class="expense-list" id="expenseList"></div>
+            <button class="add-line-button" id="addExpense" type="button">
+              <span>＋</span> 记一笔
+            </button>
+            <div class="receipt-tear" aria-hidden="true"></div>
+            <p class="marginal-quote">钱花去了哪里，日子也走到了哪里。</p>
+          </section>
+
+          <section class="paper-card harvest-card wide">
+            <div class="card-heading">
+              <div>
+                <span class="section-index">04</span>
+                <h2>今日收获</h2>
+              </div>
+              <span class="card-note">写给未来的自己</span>
+            </div>
+            <div class="harvest-grid">
+              <label class="writing-area large">
+                <span>今天学到了 / 做成了什么</span>
+                <textarea
+                  data-day-field="learnings"
+                  rows="5"
+                  maxlength="3000"
+                  placeholder="哪怕只是一点点进展，也值得被记住。"
+                ></textarea>
+              </label>
+              <label class="writing-area">
+                <span>今天的小确幸 / 想感谢的事</span>
+                <textarea
+                  data-day-field="gratitude"
+                  rows="5"
+                  maxlength="1600"
+                  placeholder="一件让你觉得‘今天还不错’的小事..."
+                ></textarea>
+              </label>
+            </div>
+            <div class="prompt-chips" aria-label="记录提示">
+              <span>不知道写什么？</span>
+              <button type="button" data-prompt="今天最值得记住的一个瞬间是">一个瞬间</button>
+              <button type="button" data-prompt="今天让我有点意外的是">一点意外</button>
+              <button type="button" data-prompt="如果给今天的自己留一句话，我会说">留一句话</button>
+            </div>
+          </section>
+
+          <section class="paper-card ideas-card wide">
+            <div class="card-heading">
+              <div>
+                <span class="section-index">05</span>
+                <h2>灵感收集</h2>
+              </div>
+              <button class="small-action" id="addIdea" type="button">
+                <span>＋</span> 记一个灵感
+              </button>
+            </div>
+            <p class="section-intro">先把一闪而过的念头接住，再慢慢分辨它能走多远。</p>
+            <div class="idea-list" id="ideaList"></div>
+          </section>
+
+          <section class="paper-card collection-card wide">
+            <div class="card-heading">
+              <div>
+                <span class="section-index">06</span>
+                <h2>喜欢收藏</h2>
+              </div>
+              <button class="small-action filled" id="addMedia" type="button">
+                <span>＋</span> 添加记录
+              </button>
+            </div>
+            <p class="section-intro">一段好文字、一个视频、一张照片，或某条舍不得划走的链接。</p>
+            <div class="media-grid" id="mediaList"></div>
+          </section>
+        </div>
+
+        <footer class="journal-footer">
+          <span>一页手账</span>
+          <p>愿你把普通的日子，也过得有迹可循。</p>
+          <span id="footerDate"></span>
+        </footer>
+      </main>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <dialog class="modal media-modal" id="mediaDialog">
+      <form method="dialog" id="mediaForm">
+        <div class="modal-heading">
+          <div>
+            <span class="eyebrow">COLLECTION</span>
+            <h2 id="mediaDialogTitle">收藏一段喜欢</h2>
+          </div>
+          <button class="icon-button" id="closeMediaDialog" type="button" aria-label="关闭">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 6l12 12M18 6 6 18" />
+            </svg>
+          </button>
+        </div>
+        <input id="mediaId" type="hidden" />
+        <fieldset class="type-tabs">
+          <legend>记录类型</legend>
+          <label><input type="radio" name="mediaType" value="text" checked /><span>好文字</span></label>
+          <label><input type="radio" name="mediaType" value="image" /><span>图片</span></label>
+          <label><input type="radio" name="mediaType" value="video" /><span>视频 / 链接</span></label>
+        </fieldset>
+        <label class="form-field">
+          <span>标题 <small>选填</small></span>
+          <input id="mediaTitle" type="text" maxlength="160" placeholder="给这条收藏起个名字" />
+        </label>
+        <label class="form-field">
+          <span id="mediaContentLabel">文字内容</span>
+          <textarea
+            id="mediaContent"
+            rows="5"
+            maxlength="5000"
+            placeholder="把打动你的那段话留在这里..."
+          ></textarea>
+        </label>
+        <div class="form-field image-upload-field" id="imageUploadField" hidden>
+          <span>图片</span>
+          <input id="mediaImage" type="file" accept="image/*" hidden />
+          <label class="upload-zone" for="mediaImage" id="uploadZone">
+            <img id="mediaImagePreview" alt="待上传图片预览" hidden />
+            <span id="uploadPrompt">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 16V4m0 0L8 8m4-4 4 4M5 15v4h14v-4" />
+              </svg>
+              选择一张图片
+              <small>会自动压缩，尽量保留清晰度</small>
+            </span>
+          </label>
+        </div>
+        <label class="form-field" id="urlField" hidden>
+          <span>链接</span>
+          <input
+            id="mediaUrl"
+            type="text"
+            inputmode="url"
+            maxlength="2000"
+            placeholder="https://..."
+          />
+        </label>
+        <label class="form-field">
+          <span>自己的备注 <small>选填</small></span>
+          <textarea
+            id="mediaNote"
+            rows="2"
+            maxlength="1200"
+            placeholder="为什么喜欢它？以后想怎么用？"
+          ></textarea>
+        </label>
+        <div class="modal-actions">
+          <button class="secondary-button" id="cancelMedia" type="button">取消</button>
+          <button class="primary-button" type="submit">保存到今天</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog class="modal archive-modal" id="archiveDialog">
+      <div class="modal-heading">
+        <div>
+          <span class="eyebrow">YOUR ARCHIVE</span>
+          <h2>翻阅收藏</h2>
+        </div>
+        <button class="icon-button" id="closeArchive" type="button" aria-label="关闭">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 6l12 12M18 6 6 18" />
+          </svg>
+        </button>
+      </div>
+      <div class="archive-controls">
+        <label class="search-box">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" />
+            <path d="m20 20-4-4" />
+          </svg>
+          <input id="archiveSearch" type="search" placeholder="搜索灵感或收藏..." />
+        </label>
+        <div class="archive-filters" id="archiveFilters">
+          <button type="button" class="active" data-filter="all">全部</button>
+          <button type="button" data-filter="big">大点子</button>
+          <button type="button" data-filter="small">小点子</button>
+          <button type="button" data-filter="media">好文字 / 影音</button>
+        </div>
+      </div>
+      <div class="archive-list" id="archiveList"></div>
+    </dialog>
+
+    <dialog class="image-preview-modal" id="imagePreviewDialog">
+      <button class="icon-button light" id="closeImagePreview" type="button" aria-label="关闭图片">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 6l12 12M18 6 6 18" />
+        </svg>
+      </button>
+      <img id="previewImage" alt="收藏图片大图" />
+    </dialog>
+
+    <script src="app.js" defer></script>
+  </body>
+</html>
