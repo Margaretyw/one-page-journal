@@ -1,0 +1,17 @@
+{
+  "name": "一页手账",
+  "short_name": "一页手账",
+  "description": "记录每天的三餐、花费、收获、灵感与喜欢的内容。",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f3edf1",
+  "theme_color": "#55505a",
+  "icons": [
+    {
+      "src": "assets/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
